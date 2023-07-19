@@ -1,0 +1,6 @@
+.mainpage-component {
+  flex-basis: 50%;
+  border-left: 0.5px solid lightgrey;
+  border-right: 0.5px solid lightgrey;
+  margin: 0 15px;
+}

@@ -1,0 +1,17 @@
+.modalEditProfile .img-wrapper {
+  display: inline-block;
+  width: 100%;
+}
+
+.modalEditProfile img.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.modalEditProfile img.cover_photo {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}

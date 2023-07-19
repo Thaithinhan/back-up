@@ -1,0 +1,5 @@
+.right-bar {
+  flex: 1;
+  position: sticky;
+  top: 0;
+}
