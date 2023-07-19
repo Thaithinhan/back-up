@@ -4,8 +4,10 @@ import MainpageHeader from "../MainpageHeader/MainpageHeader";
 import Tweet from "../Tweet/Tweet";
 import { useState } from "react";
 import axios from "axios";
+import LoadingComponent from "../LoadingComponent";
 
 const MainpageComponent = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [tweets, setTweets] = useState([]);
   const [comments, setComments] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -28,10 +30,12 @@ const MainpageComponent = () => {
     );
     // console.log(response.data.tweets);
     setTweets(response.data.tweets);
+    setIsLoading(false);
   };
 
   return (
     <div className="mainpage-component">
+      {isLoading && <LoadingComponent />}
       <MainpageHeader setIsUpdate={setIsUpdate} isUpdate={isUpdate} />
       {tweets.map((tweet, index) => (
         <Tweet

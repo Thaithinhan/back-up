@@ -6,8 +6,10 @@ import { login } from "../../redux/reducer/userSlice";
 import GoogleButton from "react-google-button";
 import { auth, provider } from "../../Configs/Firebase/firebase.configs";
 import { useAuthState } from "react-firebase-hooks/auth";
+import LoadingComponent from "../LoadingComponent";
 
 const LoginComponent = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState({
     email: "",
     password: "",
@@ -23,11 +25,13 @@ const LoginComponent = () => {
   //Xử lý đăng nhập
   const handleLogin = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     try {
       const loginValue = inputValue;
       await dispatch(login(loginValue)).unwrap();
       window.location.href = "/home";
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -51,6 +55,7 @@ const LoginComponent = () => {
 
   return (
     <div className="login">
+      {isLoading && <LoadingComponent />}
       <div className="login-top">
         <svg
           viewBox="0 0 24 24"
