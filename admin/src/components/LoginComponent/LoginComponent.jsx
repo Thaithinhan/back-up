@@ -3,18 +3,14 @@ import { Link } from "react-router-dom";
 import "./LoginComponent.css";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/reducer/userSlice";
-import GoogleButton from "react-google-button";
-import { auth, provider } from "../../Configs/Firebase/firebase.configs";
-import { useAuthState } from "react-firebase-hooks/auth";
-import LoadingComponent from "../LoadingComponent";
-import { io } from "socket.io-client";
 
 const LoginComponent = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState({
     email: "",
     password: "",
   });
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useDispatch();
 
@@ -26,38 +22,27 @@ const LoginComponent = () => {
   //Xử lý đăng nhập
   const handleLogin = async (event) => {
     event.preventDefault();
-    setIsLoading(true);
     try {
       const loginValue = inputValue;
-      const userAction = await dispatch(login(loginValue)).unwrap();
-      const socket = io("http://localhost:4000");
+      const respone = await dispatch(login(loginValue)).unwrap();
+      const user = respone.user;
+      const accessToken = respone.accessToken;
+      if (respone.error) {
+        setErrorMessage("Email or Password is incorrect");
+        return;
+      }
 
-      socket.emit("login", { userId: userAction._id });
+      if (user.role === 1) {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("login-user", user);
 
-      socket.on("loginSuccess", ({ userId, notificationsCount }) => {
-        // Kiểm tra xem userId có trùng với userId của người dùng hiện tại không
-        const currentUser = JSON.parse(localStorage.getItem("login-user"));
-        if (userId === userAction._id) {
-          // Lưu số lượng thông báo vào localStorage
-          localStorage.setItem("notificationsCount", notificationsCount);
-        }
-      });
-      window.location.href = "/home";
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-    }
-  };
-
-  const [user] = useAuthState(auth);
-  //Xử lý đăng nhập google
-  const handleLoginByGoogle = async () => {
-    try {
-      const result = await auth.signInWithPopup(provider);
-      const { user } = result;
-      console.log(user);
+        window.location.href = "/";
+      } else {
+        setErrorMessage("You are not allowed to access this page.");
+      }
     } catch (error) {
       console.log(error);
+      setErrorMessage("Email or Password is incorrect");
     }
   };
 
@@ -68,7 +53,6 @@ const LoginComponent = () => {
 
   return (
     <div className="login">
-      {isLoading && <LoadingComponent />}
       <div className="login-top">
         <svg
           viewBox="0 0 24 24"
@@ -104,22 +88,9 @@ const LoginComponent = () => {
             Password <sup className="text-danger">*</sup>
           </label>
         </div>
+        <p className="text-danger fw-bold error">{errorMessage}</p>
         <input type="submit" className="btn btn-primary" value="Log in" />
       </form>
-      <div className="separator">
-        <div className="line" />
-        <h5>or</h5>
-        <div className="line" />
-      </div>
-
-      <GoogleButton className="google_btn" onClick={handleLoginByGoogle} />
-
-      <h5>
-        Don't Have you account?
-        <Link to={"/register"} className="signin_btn mx-1">
-          Register
-        </Link>
-      </h5>
     </div>
   );
 };

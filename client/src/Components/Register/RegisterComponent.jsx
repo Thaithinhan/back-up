@@ -12,6 +12,13 @@ const RegisterComponent = () => {
     email: "",
   });
 
+  const [errorMessgae, setErrorMessgae] = useState({
+    fullname: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+
   //Handle Input Value
   const handleInput = (e) => {
     setInputValue({ ...inputValue, [e.target.name]: e.target.value });
@@ -24,13 +31,20 @@ const RegisterComponent = () => {
     axios
       .post("/users/register", newUser)
       .then((response) => {
-        console.log(response.data);
+        setInputValue({ fullname: "", username: "", password: "", email: "" });
+        window.location.href = "/login";
       })
       .catch((error) => {
-        console.error(error);
+        console.log(333333, error.response.data.errors);
+
+        setErrorMessgae({
+          email: error.response.data.errors.email.msg,
+          fullname: error.response.data.errors.fullname.msg,
+          username: error.response.data.errors.username.msg,
+          password: error.response.data.errors.password.msg,
+        });
+        return;
       });
-    setInputValue({ fullname: "", username: "", password: "", email: "" });
-    window.location.href = "/login";
   };
 
   return (
@@ -64,6 +78,7 @@ const RegisterComponent = () => {
           <label htmlFor="reg-fullname">
             Fullname <sup className="text-danger">*</sup>
           </label>
+          <p className="text-danger fw-bold">{errorMessgae.fullname}</p>
         </div>
         <div className="form-group">
           <input
@@ -76,6 +91,7 @@ const RegisterComponent = () => {
           <label htmlFor="reg-username">
             Username <sup className="text-danger">*</sup>
           </label>
+          <p className="text-danger fw-bold">{errorMessgae.username}</p>
         </div>
         <div className="form-group">
           <input
@@ -88,6 +104,7 @@ const RegisterComponent = () => {
           <label htmlFor="reg-email">
             Email <sup className="text-danger">*</sup>
           </label>
+          <p className="text-danger fw-bold">{errorMessgae.email}</p>
         </div>
         <div className="form-group">
           <input
@@ -100,6 +117,7 @@ const RegisterComponent = () => {
           <label htmlFor="reg-password">
             Password <sup className="text-danger">*</sup>
           </label>
+          <p className="text-danger fw-bold">{errorMessgae.password}</p>
         </div>
         <input
           type="submit"

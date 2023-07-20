@@ -12,6 +12,7 @@ const tweetRouter = require('../app/routes/tweetRoute');
 const commentRouter = require('../app/routes/commentRoute');
 const chatRoute = require('./routes/chatRoute');
 const notificationRoute = require('./routes/NotificationRoute');
+const orderRoute = require('./routes/orderRoute');
 
 //Middelware
 app.use(express.urlencoded());
@@ -19,7 +20,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 // app.use(helmet());
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://back-up-one.vercel.app'],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -40,6 +41,7 @@ app.use('/tweets', tweetRouter);
 app.use('/comments', commentRouter);
 app.use('/chats-messages', chatRoute);
 app.use('/notifications', notificationRoute);
+app.use('/orders', orderRoute);
 
 //handle error
 

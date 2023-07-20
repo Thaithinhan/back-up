@@ -29,12 +29,17 @@ const getNotifications = async (req, res) => {
     let notifications = await Notification.find({ receiver }).populate('sender');
     notifications = await Promise.all(
       notifications.map(async (notification) => {
-        // kiểm tra xem tweetId có tồn tại trong bảng Tweet không
-        const tweetExists = await Tweet.findById(notification.tweetId);
-        if (tweetExists) {
-          return notification;
+        // Nếu type là 'like', kiểm tra xem tweetId có tồn tại trong bảng Tweet không
+        if (notification.type === 'like') {
+          const tweetExists = await Tweet.findById(notification.tweetId);
+          if (tweetExists) {
+            return notification;
+          } else {
+            return null;
+          }
         } else {
-          return null;
+          // Nếu type là 'register', không cần kiểm tra tweetId
+          return notification;
         }
       })
     );
@@ -46,4 +51,14 @@ const getNotifications = async (req, res) => {
   }
 };
 
-module.exports = { createNotification, getNotifications };
+const getNotificationCount = async (userId) => {
+  try {
+    const count = await Notification.countDocuments({ receiver: userId });
+    return count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
+module.exports = { createNotification, getNotifications, getNotificationCount };

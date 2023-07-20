@@ -18,6 +18,9 @@ router.post('/login', userController.login);
 //LẤY TẤT CẢ USER TRÊN DATABASE
 router.get('/', userController.getAllUsers);
 
+//LẤY TẤT CẢ USER KHÔNG PHẢI ADMIN
+router.get('/notadmin', userController.getAllUsersNotAdmin);
+
 //LẤY TẤT CẢ USER ĐANG FOLLOW
 router.get('/following', userMiddleware.authMiddleware, userController.getFollowingUsers);
 

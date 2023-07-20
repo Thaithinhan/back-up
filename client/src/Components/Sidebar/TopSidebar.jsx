@@ -23,7 +23,10 @@ const TopSidebar = ({ isUpdateNoti, setIsUpdateNoti }) => {
       // Kiểm tra xem thông báo có dành cho người dùng hiện tại hay không
       if (notification.receiverId === userLogin._id) {
         // Cập nhật số lượng thông báo
-        setNotificationsCount(notificationsCount + 1);
+        let count = notificationsCount + 1;
+        setNotificationsCount(count);
+        // Lưu số lượng thông báo vào localStorage
+        localStorage.setItem("notificationsCount", count);
       }
     });
 
@@ -33,10 +36,21 @@ const TopSidebar = ({ isUpdateNoti, setIsUpdateNoti }) => {
     };
   }, [userLogin._id, notificationsCount]);
 
+  useEffect(() => {
+    // Lấy số lượng thông báo từ localStorage
+    let count = localStorage.getItem("notificationsCount");
+    if (count) {
+      setNotificationsCount(parseInt(count));
+    }
+  }, []);
+
   const handleNotificationClick = () => {
     // Cập nhật số lượng thông báo khi người dùng click vào
     setNotificationsCount(0);
     // setIsUpdateNoti(!isUpdateNoti);
+
+    // Lưu số lượng thông báo vào localStorage
+    localStorage.setItem("notificationsCount", 0);
   };
 
   return (

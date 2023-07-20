@@ -1,0 +1,19 @@
+.sidebar .logout-button {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  background-color: #1da1f2;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  width: calc(100% - 20px);
+}
+
+.sidebar .logout-button .fa-sign-out-alt {
+  margin-right: 5px;
+}

@@ -7,6 +7,8 @@ const secret_key = require('../../configs/jwt.configs');
 const generateAccessToken = require('../utils/accessToken');
 const sendRegistrationEmail = require('../utils/mailer');
 const mongoose = require('mongoose');
+const Notification = require('../models/schemas/notification.schemas');
+const { getNotificationCount } = require('./notificationController');
 // const { router } = require('../app');
 
 //REGISTER Users
@@ -21,6 +23,16 @@ const register = async (req, res) => {
     const newUser = new UserSchema({ fullname, username, email, password: hashedPassword });
 
     const savedUser = await newUser.save();
+
+    const notification = new Notification({
+      receiver: savedUser._id,
+      type: 'register',
+    });
+    await notification.save();
+
+    // Sử dụng socket.io để gửi thông báo
+    const io = req.app.get('socketio');
+    io.emit('notification', { receiverId: savedUser._id, type: 'register' });
 
     //Gửi email
     await sendRegistrationEmail(savedUser);
@@ -46,6 +58,12 @@ const login = async (req, res) => {
     // Tạo access token
     const accessToken = generateAccessToken(user._id);
 
+    // Emit sự kiện 'loginSuccess'
+    const count = await getNotificationCount(user._id);
+    // Sử dụng socket.io để gửi thông báo
+    const io = req.app.get('socketio');
+    io.emit('loginSuccess', { userId: user._id, notificationsCount: count });
+
     // Trả về access token trong phản hồi
     // console.log(accessToken);
     res.status(200).json({ accessToken, user });
@@ -59,6 +77,18 @@ const login = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await UserSchema.find();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Error getting all users', error);
+    res.status(500).json({ error: 'Error getting all users' });
+  }
+};
+
+//GET ALL USER NOT ADMIN
+//GET ALL Users
+const getAllUsersNotAdmin = async (req, res) => {
+  try {
+    const users = await UserSchema.find({ role: { $ne: 1 } });
     res.status(200).json(users);
   } catch (error) {
     console.error('Error getting all users', error);
@@ -278,4 +308,5 @@ module.exports = {
   getFollowingUsers,
   buyVerification,
   checkVerification,
+  getAllUsersNotAdmin,
 };

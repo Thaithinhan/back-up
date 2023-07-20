@@ -1,0 +1,39 @@
+.admin-page {
+  display: flex;
+}
+
+.sidebar {
+  width: 20%;
+  background-color: #15202b;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+  position: relative;
+}
+
+.sidebar .logo {
+  text-align: center;
+}
+.sidebar .logo svg {
+  width: 150px;
+  fill: #1da1f2;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 20px;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.content {
+  width: 80%;
+  padding: 20px;
+}

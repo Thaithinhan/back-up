@@ -66,22 +66,42 @@ const Notification_Component = (isUpdateNoti, setIsUpdateNoti) => {
 
       {notifications.map((noti) => (
         <div className="notification" key={noti._id}>
-          <Link to={`/profile/${noti.sender._id}`} className="avatar">
-            <img src={noti.sender.avatar} alt="Avatar" />
-          </Link>
-          <div className="notification-content">
-            <Link to={"/profile-user"} className="header nav-link">
-              <span className="fullname">{noti.sender.fullname}</span>{" "}
-              <span className="username">@ {noti.sender.username}</span>
-              <span className="date">{formatTimestamp(noti.createdAt)}</span>
-            </Link>
-            <div className="content">
-              {noti.type}
-              <Link to={`/post-detail/${noti.tweetId}`} className="mx-2">
-                your tweet
+          {noti.type === "like" ? (
+            <>
+              <Link to={`/profile/${noti.sender._id}`} className="avatar">
+                <img src={noti.sender.avatar} alt="Avatar" />
               </Link>
-            </div>
-          </div>
+              <div className="notification-content">
+                <Link to={"/profile-user"} className="header nav-link">
+                  <span className="fullname">{noti.sender.fullname}</span>{" "}
+                  <span className="username">@ {noti.sender.username}</span>
+                  <span className="date">
+                    {formatTimestamp(noti.createdAt)}
+                  </span>
+                </Link>
+                <div className="content">
+                  {noti.type}
+                  <Link to={`/post-detail/${noti.tweetId}`} className="mx-2">
+                    your tweet
+                  </Link>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="avatar">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/512px-Logo_of_Twitter.svg.png?20220821125553"
+                  alt="Avatar"
+                />
+              </div>
+              <div className="notification-content">
+                <div className="content">
+                  You Registered Twitter Successfully !!!
+                </div>
+              </div>
+            </>
+          )}
         </div>
       ))}
     </div>

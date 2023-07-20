@@ -1,0 +1,12 @@
+.table-user tr th,
+.table-user tr td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table .avt-table {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}

@@ -4,11 +4,11 @@ import { UserAPI } from "../../axiosClient/userAPI";
 //Login
 export const login = createAsyncThunk("login/fetch", async (payload) => {
   const res = await UserAPI.login(payload);
-  //   console.log(res);
+  console.log(res);
   localStorage.setItem("login-user", JSON.stringify(res.data.user));
   localStorage.setItem("accessToken", JSON.stringify(res.data.accessToken));
 
-  return res;
+  return res.data.user;
 });
 
 //GET ME PROFILE
